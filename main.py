@@ -1,16 +1,10 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+# Name: Ruben Sanduleac
+# Date: March 1, 2022
+# Description: This program uses BeautifulSoup to scrape the billboard website for the
+#              top 100 hit songs in the date specfied by the user. Once the program has all the information,
+#              it will use the Spotify API to automatically generate the playlist with all the songs.
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# TODO: capture a response from the user for the date that he would like to have a playlist from
+# TODO: scrape the top 100 hits by looking at the songs titles'
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

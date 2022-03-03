@@ -5,10 +5,6 @@
 #              it will use the Spotify API to automatically generate the playlist with all the songs.
 
 
-# TODO: capture a response from the user for the date that he would like to have a playlist from
-# TODO: scrape the top 100 hits by looking at the songs titles'
-from unittest import result
-
 import requests
 from bs4 import BeautifulSoup
 import spotipy
@@ -66,4 +62,5 @@ for song in list_songs:
     except IndexError:
         print(f"{song} doesn't exist in Spotify. Skipped.")
 
-print(song_uris)
+playlist = sp.user_playlist_create(user=user_id, name=f"{year} Billboard 100", collaborative=False, public=False)
+sp.playlist_add_items(playlist_id=playlist["id"], items=song_uris)

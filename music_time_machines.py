@@ -61,8 +61,8 @@ for title in music_title:
     # in the case of an index error then let the user know that the songs is not in the spotify library
     except IndexError:
         print(f"{song_title} doesn't exist in Spotify. Skipped.")
-# create a new playlist by pasing the user if the year that the user requested as well as set it to be non
-# collaborative and private.
+# create a new playlist by pasing the user if the year that the user requested as well as set it to be
+# non-collaborative and private.
 playlist = spotify_app.user_playlist_create(user=user_id, name=f"{year} Billboard 100", collaborative=False,
                                             public=False)
 # add the list of songs to the playlist.

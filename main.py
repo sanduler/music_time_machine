@@ -7,6 +7,8 @@
 
 # TODO: capture a response from the user for the date that he would like to have a playlist from
 # TODO: scrape the top 100 hits by looking at the songs titles'
+from unittest import result
+
 import requests
 from bs4 import BeautifulSoup
 import spotipy
@@ -51,4 +53,17 @@ for title in music_title:
     # TODO: Need to cleanup the specificity of the target scrape.
     song_title = title.get_text().strip()
     list_songs.append(song_title)
-print(list_songs)
+# print(list_songs)
+
+song_uris = []
+
+for song in list_songs:
+    result = sp.search(q=f"track:{song}", type="track")
+    # print(result)
+    try:
+        uri = result["tracks"]["items"][0]["uri"]
+        song_uris.append(uri)
+    except IndexError:
+        print(f"{song} doesn't exist in Spotify. Skipped.")
+
+print(song_uris)

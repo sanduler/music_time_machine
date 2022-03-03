@@ -22,9 +22,15 @@ top_hits = response.text
 # create a new BeautifulSoup object for this website and parse the text
 soup = BeautifulSoup(top_hits, "html.parser")
 # create a list of all the top movies including the ranking
-music_title = soup.find_all(name="h3", id="title-of-a-story")
-# print(music_title)
-
+music_title = soup.find_all(name="h3",
+                            class_="c-title a-no-trucate a-font-primary-bold-s u-"
+                                              "letter-spacing-0021 lrv-u-font-size-18@tablet lrv-u-font-size-16 "
+                                              "u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis "
+                                              "u-max-width-330 u-max-width-230@tablet-only",
+                            id="title-of-a-story")
+list_songs = []
 for title in music_title:
     # TODO: Need to cleanup the specificity of the target scrape.
-    print(title.get_text())
+    song_title = title.get_text().strip()
+    list_songs.append(song_title)
+print(list_songs)

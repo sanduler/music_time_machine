@@ -11,21 +11,23 @@ import spotipy
 import os
 from spotipy.oauth2 import SpotifyOAuth
 
+# environmental variables used in the program
 spotify_id = os.environ["SPOTIPY_CLIENT_ID"]
 spotify_secret = os.environ["SPOTIPY_CLIENT_SECRET"]
 redirect_uri = os.environ["SPOTIPY_REDIRECT_URI"]
 
-sp = spotipy.Spotify()
+# create an object for the Spotify authentication
+spotify_app = spotipy.Spotify()
 
-sp.auth_manager=SpotifyOAuth(scope="playlist-modify-private",
-                             redirect_uri=redirect_uri,
-                             client_id=spotify_id,
-                             client_secret=spotify_secret,
-                             show_dialog=True,
-                             cache_path="token.txt")
-
-user_id = sp.current_user()["id"]
-
+# pass the required methods to Spotify Authentication API
+spotify_app.auth_manager = SpotifyOAuth(scope="playlist-modify-private",
+                                        redirect_uri=redirect_uri,
+                                        client_id=spotify_id,
+                                        client_secret=spotify_secret,
+                                        show_dialog=True,
+                                        cache_path="token.txt")
+# get the user if
+user_id = spotify_app.current_user()["id"]
 # capture the input for the year that the program will search for to scrape.
 year = input("Which year do you want to travel to? Type the data in this format: YYYY-MM-DD: ")
 # pass the year to the billboard website which will be used to scrape the data
@@ -40,27 +42,24 @@ soup = BeautifulSoup(top_hits, "html.parser")
 # create a list of all the top movies including the ranking
 music_title = soup.find_all(name="h3",
                             class_="c-title a-no-trucate a-font-primary-bold-s u-"
-                                              "letter-spacing-0021 lrv-u-font-size-18@tablet lrv-u-font-size-16 "
-                                              "u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis "
-                                              "u-max-width-330 u-max-width-230@tablet-only",
+                                   "letter-spacing-0021 lrv-u-font-size-18@tablet lrv-u-font-size-16 "
+                                   "u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis "
+                                   "u-max-width-330 u-max-width-230@tablet-only",
                             id="title-of-a-story")
-list_songs = []
-for title in music_title:
-    # TODO: Need to cleanup the specificity of the target scrape.
-    song_title = title.get_text().strip()
-    list_songs.append(song_title)
-# print(list_songs)
-
+# generate a list of songs
 song_uris = []
-
-for song in list_songs:
-    result = sp.search(q=f"track:{song}", type="track")
+# loop through each title of the songs
+for title in music_title:
+    # remove the white space and \n in the lust
+    song_title = title.get_text().strip()
+    result = spotify_app.search(q=f"track:{song_title}", type="track")
     # print(result)
     try:
         uri = result["tracks"]["items"][0]["uri"]
         song_uris.append(uri)
     except IndexError:
-        print(f"{song} doesn't exist in Spotify. Skipped.")
+        print(f"{song_title} doesn't exist in Spotify. Skipped.")
 
-playlist = sp.user_playlist_create(user=user_id, name=f"{year} Billboard 100", collaborative=False, public=False)
-sp.playlist_add_items(playlist_id=playlist["id"], items=song_uris)
+playlist = spotify_app.user_playlist_create(user=user_id, name=f"{year} Billboard 100", collaborative=False,
+                                            public=False)
+spotify_app.playlist_add_items(playlist_id=playlist["id"], items=song_uris)

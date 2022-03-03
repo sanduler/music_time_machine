@@ -9,6 +9,24 @@
 # TODO: scrape the top 100 hits by looking at the songs titles'
 import requests
 from bs4 import BeautifulSoup
+import spotipy
+import os
+from spotipy.oauth2 import SpotifyOAuth
+
+spotify_id = os.environ["SPOTIPY_CLIENT_ID"]
+spotify_secret = os.environ["SPOTIPY_CLIENT_SECRET"]
+redirect_uri = os.environ["SPOTIPY_REDIRECT_URI"]
+
+sp = spotipy.Spotify()
+
+sp.auth_manager=SpotifyOAuth(scope="playlist-modify-private",
+                             redirect_uri=redirect_uri,
+                             client_id=spotify_id,
+                             client_secret=spotify_secret,
+                             show_dialog=True,
+                             cache_path="token.txt")
+
+user_id = sp.current_user()["id"]
 
 # capture the input for the year that the program will search for to scrape.
 year = input("Which year do you want to travel to? Type the data in this format: YYYY-MM-DD: ")

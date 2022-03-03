@@ -7,8 +7,28 @@
 
 # TODO: capture a response from the user for the date that he would like to have a playlist from
 # TODO: scrape the top 100 hits by looking at the songs titles'
+from unittest import result
+
 import requests
 from bs4 import BeautifulSoup
+import spotipy
+import os
+from spotipy.oauth2 import SpotifyOAuth
+
+spotify_id = os.environ["SPOTIPY_CLIENT_ID"]
+spotify_secret = os.environ["SPOTIPY_CLIENT_SECRET"]
+redirect_uri = os.environ["SPOTIPY_REDIRECT_URI"]
+
+sp = spotipy.Spotify()
+
+sp.auth_manager=SpotifyOAuth(scope="playlist-modify-private",
+                             redirect_uri=redirect_uri,
+                             client_id=spotify_id,
+                             client_secret=spotify_secret,
+                             show_dialog=True,
+                             cache_path="token.txt")
+
+user_id = sp.current_user()["id"]
 
 # capture the input for the year that the program will search for to scrape.
 year = input("Which year do you want to travel to? Type the data in this format: YYYY-MM-DD: ")
@@ -33,4 +53,17 @@ for title in music_title:
     # TODO: Need to cleanup the specificity of the target scrape.
     song_title = title.get_text().strip()
     list_songs.append(song_title)
-print(list_songs)
+# print(list_songs)
+
+song_uris = []
+
+for song in list_songs:
+    result = sp.search(q=f"track:{song}", type="track")
+    # print(result)
+    try:
+        uri = result["tracks"]["items"][0]["uri"]
+        song_uris.append(uri)
+    except IndexError:
+        print(f"{song} doesn't exist in Spotify. Skipped.")
+
+print(song_uris)
